@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+	<link rel="stylesheet" href="bgimgadmin.css"> 
+	
+</head>
+<body>
+    <header>
+      <marquee><b>  <h1>Election Commission Dashboard</h1></b></marquee>
+    </header>
+    <nav>
+		<button> <a href="admin-dashboard.html">HOME</a> </button> 
+
+        <button onclick="viewPendingUsers()">View Pending Users</button>
+        <button onclick="addCandidate()">Add Candidate</button>
+        <button onclick="viewResults()">View Results</button>
+        <button onclick="loadManageUsers()">Manage Users</button> <!-- Fixed Button -->
+		<button onclick="viewFeedback()">View Feedback</button> 
+		<button ><a href="index.html">Logout </a></button> <!-- ✅ Added Logout Button -->
+
+    </nav>
+    <div id="content"></div>
+
+    <script>
+		async function viewPendingUsers() {
+		    try {
+		        console.log("Fetching pending users...");
+		        const response = await fetch('/admin/pending-users');
+		        if (!response.ok) throw new Error("Failed to fetch pending users.");
+
+		        const users = await response.json();
+		        console.log("Pending users received:", users);
+
+		        const contentDiv = document.getElementById('content');
+		        contentDiv.innerHTML = "<h2>Pending Users</h2>";
+
+		        if (!users || users.length === 0) {
+		            contentDiv.innerHTML += "<p>No pending users found.</p>";
+		            return;
+		        }
+
+		        // Create table structure
+		        let table = `
+		            <table border="1" cellspacing="0" cellpadding="10" style="width: 80%; margin: auto; border-collapse: collapse;">
+		                <thead>
+		                    <tr style="background: #333; color: white;">
+		                        <th>Username</th>
+		                        <th>Status</th>
+		                    </tr>
+		                </thead>
+		                <tbody>
+		        `;
+
+		        users.forEach(user => {
+		            table += `
+		                <tr>
+		                    <td style="text-align: center;">${user.username}</td>
+		                    <td style="text-align: center;">${user.status}</td>
+		                </tr>
+		            `;
+		        });
+
+		        table += `</tbody></table>`;
+		        contentDiv.innerHTML += table;
+
+		    } catch (error) {
+		        console.error("Error loading pending users:", error);
+		        document.getElementById('content').innerHTML = "<p>Error loading pending users.</p>";
+		    }
+		}
+
+        async function addCandidate() {
+            const name = prompt('Enter candidate name:');
+            if (!name) return;
+            const response = await fetch('/admin/add-candidate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name }),
+            });
+            if (response.ok) {
+                alert('Candidate added successfully');
+            } else {
+                alert('Failed to add candidate');
+            }
+        }
+
+		async function viewResults() {
+		    try {
+		        console.log("Fetching election results...");
+		        const response = await fetch('/votes/results'); // ✅ Correct API URL
+		        if (!response.ok) throw new Error("Failed to fetch results.");
+
+		        const results = await response.json();
+		        console.log("Results received:", results);
+
+		        const contentDiv = document.getElementById('content');
+		        contentDiv.innerHTML = "<h2>Election Results</h2>";
+
+		        if (!results || results.length === 0) {
+		            contentDiv.innerHTML += "<p>No votes have been cast yet.</p>";
+		            return;
+		        }
+
+		        // Create table structure
+		        let table = `
+		            <table border="1" cellspacing="0" cellpadding="10" style="width: 80%; margin: auto; border-collapse: collapse;">
+		                <thead>
+		                    <tr style="background: #333; color: white;">
+		                        <th>Candidate Name</th>
+		                        <th>Vote Count</th>
+		                    </tr>
+		                </thead>
+		                <tbody>
+		        `;
+
+		        results.forEach(result => {
+		            const candidateName = result[0] || "Unknown Candidate";
+		            const voteCount = result[1] !== undefined ? result[1] : 0;
+
+		            table += `
+		                <tr>
+		                    <td style="text-align: center;">${candidateName}</td>
+		                    <td style="text-align: center;">${voteCount}</td>
+		                </tr>
+		            `;
+		        });
+
+		        table += `</tbody></table>`;
+		        contentDiv.innerHTML += table;
+
+		    } catch (error) {
+		        console.error("Error loading results:", error);
+		        document.getElementById('content').innerHTML = "<p>Error loading results.</p>";
+		    }
+		}
+
+        // ✅ Load "Manage Users" and Ensure Scripts Are Executed
+        async function loadManageUsers() {
+            console.log("Loading Manage Users...");
+            try {
+                const response = await fetch('admin-manage-users.html');
+                if (!response.ok) {
+                    throw new Error("Failed to load admin-manage-users.html");
+                }
+                const content = await response.text();
+                document.getElementById('content').innerHTML = content;
+                console.log("Manage Users page loaded.");
+
+                // ✅ Extract and Execute Scripts from Loaded Content
+                const scriptTags = document.getElementById('content').getElementsByTagName('script');
+                for (let script of scriptTags) {
+                    eval(script.textContent); // ✅ Run scripts inside the loaded page
+                }
+
+                // ✅ Ensure updateUserStatus() is available
+                setTimeout(() => {
+                    if (typeof updateUserStatus === "function") {
+                        console.log("updateUserStatus() function loaded.");
+                    } else {
+                        console.error("updateUserStatus() function not found.");
+                    }
+                    if (typeof viewUsers === "function") {
+                        console.log("Executing viewUsers()...");
+                        viewUsers();
+                    } else {
+                        console.error("viewUsers() function not found.");
+                    }
+                }, 500);
+            } catch (error) {
+                console.error("Error loading Manage Users:", error);
+            }
+        }
+		
+		async function viewFeedback() {
+		    try {
+		        console.log("Fetching feedback...");
+		        const response = await fetch('/feedback/all'); // ✅ Correct API URL
+		        if (!response.ok) throw new Error("Failed to fetch feedback.");
+
+		        const feedbackList = await response.json();
+		        console.log("Feedback received:", feedbackList);
+
+		        const contentDiv = document.getElementById('content');
+		        contentDiv.innerHTML = "<h2>User Feedback</h2>";
+
+		        if (!feedbackList || feedbackList.length === 0) {
+		            contentDiv.innerHTML += "<p>No feedback available.</p>";
+		            return;
+		        }
+
+		        // Create table structure
+		        let table = `
+		            <table border="1" cellspacing="0" cellpadding="10" style="width: 80%; margin: auto; border-collapse: collapse;">
+		                <thead>
+		                    <tr style="background: #333; color: white;">
+		                        <th>Voter ID</th>
+		                        <th>Feedback</th>
+		                    </tr>
+		                </thead>
+		                <tbody>
+		        `;
+
+		        feedbackList.forEach(feedback => {
+		            table += `
+		                <tr>
+		                    <td style="text-align: center;">${feedback.voterId}</td>
+		                    <td style="text-align: center;">${feedback.feedbackText}</td>
+		                </tr>
+		            `;
+		        });
+
+		        table += `</tbody></table>`;
+		        contentDiv.innerHTML += table;
+
+		    } catch (error) {
+		        console.error("Error loading feedback:", error);
+		        document.getElementById('content').innerHTML = "<p>Error loading feedback.</p>";
+		    }
+		}
+		
+		
+    </script>
+</body>
+</html>

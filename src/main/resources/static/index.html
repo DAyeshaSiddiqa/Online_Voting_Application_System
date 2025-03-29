@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Voting Application</title>
+    <link rel="stylesheet" href="styles.css">
+	<link rel="stylesheet" href="hbg.css">
+
+    <style>
+        /* General Styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        /* Header */
+        header {
+            background: rgba(0, 128, 0, 0.9);
+            color: white;
+            padding: 20px 0;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+            animation: slideDown 1.5s ease-in-out;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        /* Carousel Container */
+        .carousel-container {
+            position: relative;
+            max-width: 600px;
+            margin: 100px auto 20px;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .carousel-slide {
+            display: flex;
+            width: 300%;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .carousel-slide img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        /* Navigation Buttons */
+        .prev, .next {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 50%;
+            font-size: 18px;
+            transition: 0.3s;
+        }
+
+        .prev:hover, .next:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        .prev { left: 10px; }
+        .next { right: 10px; }
+
+        /* Button Container */
+        .button-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            margin-top: 40px;
+        }
+
+        /* Animated Buttons */
+        .animated-button {
+            background-color: #007BFF;
+            color: white;
+            font-size: 18px;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.20s, background-color 0.3s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            text-decoration: none;
+        }
+
+        .animated-button:hover {
+            transform: scale(1.1);
+            background-color: #0056b3;
+        }
+
+        .animated-button:active {
+            transform: scale(1.05);
+        }
+
+        /* Admin Button */
+        .admin-button {
+            background-color: #FF5733;
+        }
+
+        .admin-button:hover {
+            background-color: #C0392B;
+        }
+
+        /* Keyframes for header animation */
+        @keyframes slideDown {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+	
+        <h1><b> Online Voting  Application System </b></h1>
+    </header>
+
+    <!-- Image Carousel 
+    <div class="carousel-container">
+        <div class="carousel-slide">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTHeczB26PmMM1fOIB4t31txyqXvnNnuoC_Pw&s" alt="Voting Image 1">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQIrb-UKQLdOYnyusWYXP538XodkMGuajvqeQ&s" alt="Voting Image 2">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQo4R9fP09pZU-kXFqO8UIzdw4lJpXQObtxpQ&s" alt="Voting Image 3">
+        </div>
+        <button class="prev" onclick="prevSlide()">&#10094;</button>
+        <button class="next" onclick="nextSlide()">&#10095;</button>
+    </div>
+	-->
+	<br><br><br>	<br><br><br>
+
+    <!-- Buttons -->
+    <div class="button-container">
+		<a href="register.html"><button class="animated-button">Home</button></a>
+
+        <a href="register.html"><button class="animated-button">Voter Register</button></a>
+        <a href="login.html"><button class="animated-button">Voter Login</button></a>
+        <a href="admin-login.html"><button class="animated-button admin-button">Election Commission</button></a>
+    </div>
+
+	
+	
+    <script>
+        let currentIndex = 0;
+        const slides = document.querySelector(".carousel-slide");
+        const totalSlides = document.querySelectorAll(".carousel-slide img").length;
+
+        function showSlide(index) {
+            if (index >= totalSlides) {
+                currentIndex = 0;
+            } else if (index < 0) {
+                currentIndex = totalSlides - 1;
+            } else {
+                currentIndex = index;
+            }
+            slides.style.transform = `translateX(-${currentIndex * 100}%)`;
+        }
+
+        function nextSlide() {
+            showSlide(currentIndex + 1);
+        }
+
+        function prevSlide() {
+            showSlide(currentIndex - 1);
+        }
+
+        // Auto-slide every 3 seconds
+        setInterval(() => {
+            nextSlide();
+        }, 3000);
+    </script>
+	<br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+<footer>
+	<h1><font color="White">
+	<p>© Developed By Ayesha@2025  </p> </font></h1>
+	</footer>
+</body>
+</html>
