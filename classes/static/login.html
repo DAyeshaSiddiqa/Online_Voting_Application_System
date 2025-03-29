@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="styles.css">
+	<link rel="stylesheet" href="vbg.css">
+
+</head>
+<body>
+    <header>
+        <h1>Voter Login</h1>
+    </header>
+
+    <form id="loginForm">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" required placeholder="Enter your username">
+        
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required placeholder="Enter your password">
+        
+        <button type="submit">Login</button><br><br>
+		NewUser <a href="register.html">ClickHere</a>
+    </form>
+	<a href="index.html"> <h1> Back </h1></a>
+
+  <h1>  <p   id="errorMessage" style="color: white; display: none;"></p></h1>
+
+    <script>
+        document.getElementById('loginForm').onsubmit = async function(e) {
+            e.preventDefault();
+            const errorMessage = document.getElementById("errorMessage");
+            errorMessage.style.display = "none"; // ✅ Hide previous error messages
+
+            const data = {
+                username: e.target.username.value,
+                password: e.target.password.value,
+            };
+
+            try {
+                console.log("Sending login request...");
+                const response = await fetch('/users/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                console.log("Response Status:", response.status);
+
+                if (response.ok) {
+                    const user = await response.json();
+                    console.log("Login Successful:", user);
+
+                    // ✅ Store voter ID in localStorage after login
+                    localStorage.setItem('voterId', user.id);
+                    console.log("Stored voterId:", user.id);
+
+                    // ✅ Redirect to the Vote Dashboard
+                    window.location.href = 'vote.html';
+                } else {
+                    errorMessage.innerText = "Invalid username or password. or Your Not Authorized For Cloud plzz waiting ";
+                    errorMessage.style.display = "block";
+                }
+            } catch (error) {
+                console.error("Login error:", error);
+                errorMessage.innerText = "An error occurred. Please try again.";
+                errorMessage.style.display = "block";
+            }
+        };
+    </script>
+</body>
+</html>

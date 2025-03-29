@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Admin Dashboard</h1>
+    </header>
+    <h2>Pending Users</h2>
+    <div id="pendingUsers"></div>
+
+    <h2>Add Candidate</h2>
+    <form id="addCandidateForm">
+        <label for="name">Candidate Name</label>
+        <input type="text" id="name" name="name" required>
+        <button type="submit">Add Candidate</button>
+    </form>
+
+    <script>
+        async function loadPendingUsers() {
+            const response = await fetch('/users/pending');
+            const users = await response.json();
+            const pendingUsersDiv = document.getElementById('pendingUsers');
+            users.forEach(user => {
+                const userDiv = document.createElement('div');
+                userDiv.innerHTML = `<p>${user.username} - ${user.status}</p>
+                    <button onclick="authorizeUser(${user.id})">Authorize</button>`;
+                pendingUsersDiv.appendChild(userDiv);
+            });
+        }
+
+        async function authorizeUser(userId) {
+            await fetch(`/users/authorize/${userId}`, { method: 'PUT' });
+            alert('User authorized successfully!');
+        }
+
+        document.getElementById('addCandidateForm').onsubmit = async function(e) {
+            e.preventDefault();
+            const name = e.target.name.value;
+            await fetch('/admin/add-candidate', {
+                method: 'POST',
+                body: JSON.stringify({ name }),
+                headers: { 'Content-Type': 'application/json' }
+            });
+            alert('Candidate added successfully!');
+        };
+
+        loadPendingUsers();
+    </script>
+</body>
+</html>
